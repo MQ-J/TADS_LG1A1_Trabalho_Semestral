@@ -10,6 +10,7 @@ char op;
 int quant_sandu, valor_sandu;
 int quant_coca, valor_coca;
 int quant_pao, valor_pao;
+int valor_total;
 FILE * arq;
 char op2;
 
@@ -46,7 +47,13 @@ int main()
 		if (op2 == 's') /* Volta ao menu de opções */
 		goto inicio;
 		if (op2 =='n') /* Volta ao programa MENU_MQ */
-		goto retorno_menu; 
+		{
+			arq = fopen ("lista_pedido.txt", "a");
+			valor_total = valor_sandu + valor_coca + valor_pao;  /* calcula preço total*/
+			fprintf(arq, "\n\nR$ %i", valor_total);
+			fclose(arq);
+			goto retorno_menu;
+		} 
 	}
 	if (op == 's')                                                                               /* COCA */
 	{
@@ -62,7 +69,13 @@ int main()
 		if (op2 == 's') /* Volta ao menu de opções */
 		goto inicio;
 		if (op2 =='n') /* Volta ao programa MENU_MQ */
-		goto retorno_menu; 
+		{
+			arq = fopen ("lista_pedido.txt", "a");
+			valor_total = valor_sandu + valor_coca + valor_pao;  /* calcula preço total*/
+			fprintf(arq, "\n\nR$ %i", valor_total);
+			fclose(arq);
+			goto retorno_menu;
+		}
 	}
 	if (op == 'd')                                                                          /* PÃO DE QUEIJO */
 	{
@@ -78,7 +91,13 @@ int main()
 		if (op2 == 's') /* Volta ao menu de opções */
 		goto inicio;
 		if (op2 =='n') /* Volta ao programa MENU_MQ */
-		goto retorno_menu; 
+		{
+			arq = fopen ("lista_pedido.txt", "a");
+			valor_total = valor_sandu + valor_coca + valor_pao;  /* calcula preço total*/
+			fprintf(arq, "\n\nR$ %i", valor_total);
+			fclose(arq);
+			goto retorno_menu;
+		} 
 	}
 	if (op == 'f')                                                                          /* CANCELA PEDIDO */
 	{
