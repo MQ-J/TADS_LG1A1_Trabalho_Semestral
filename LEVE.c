@@ -15,7 +15,7 @@ int main()
 	system("cls");
 	setlocale (lc_all, "");
 	printf("========= LEVE ==========\n\n");
-	printf ("Pedido entregue? [s=sim] [n=não]\n");
+	printf ("Pedido entregue? [s=sim]\n");
 	fflush (stdin);
 	scanf ("%c", &entrega);
 	if (entrega == 's')
