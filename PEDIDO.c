@@ -32,7 +32,7 @@ int main()
 	fflush (stdin);
 	op = getche();/* captura a opção escolida*/
 	
-	if (op == 'a') /* SANDUÍCHE */
+	if (op == 'a')                                                                            /* SANDUÍCHE */
 	{
 	printf ("\n\nQuantos?\n");
 	scanf ("%i", &quant_sandu);
@@ -48,7 +48,7 @@ int main()
 		if (op2 =='n') /* Volta ao programa MENU_MQ */
 		goto retorno_menu; 
 	}
-	if (op == 's') /* COCA */
+	if (op == 's')                                                                               /* COCA */
 	{
 	printf ("\n\nQuantos?\n");
 	scanf ("%i", &quant_coca);
@@ -64,7 +64,7 @@ int main()
 		if (op2 =='n') /* Volta ao programa MENU_MQ */
 		goto retorno_menu; 
 	}
-	if (op == 'd') /* PÃO DE QUEIJO */
+	if (op == 'd')                                                                          /* PÃO DE QUEIJO */
 	{
 	printf ("\n\nQuantos?\n");
 	scanf ("%i", &quant_pao);
@@ -80,7 +80,7 @@ int main()
 		if (op2 =='n') /* Volta ao programa MENU_MQ */
 		goto retorno_menu; 
 	}
-	if (op == 'f') /* CANCELA PEDIDO */
+	if (op == 'f')                                                                          /* CANCELA PEDIDO */
 	{
 	remove ("lista_pedido.txt");
 	printf ("\n\nMais alguma coisa? [s=sim] [n=não]\n");
@@ -91,7 +91,7 @@ int main()
 		if (op2 =='n') /* Volta ao programa MENU_MQ */
 		goto retorno_menu;
 	}
-	if (op == 'j') /* VOLTA AO PROGRAMA MENU */
+	if (op == 'j')                                                                       /* VOLTA AO PROGRAMA MENU */
 	retorno_menu:
 	system ("MENU");
 	return 0;

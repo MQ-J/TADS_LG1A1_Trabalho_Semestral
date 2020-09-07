@@ -18,9 +18,9 @@ int main()
 	printf("O Pagamento foi realizado? [s=sim] [n=não]\n");
 	fflush (stdin);
 	scanf ("%c", &pagament);
-	if (pagament =='s') /* pagamento concluído*/
+	if (pagament =='s')                                     /* pagamento concluído*/
 	system ("LEVE");
-	if (pagament =='n') /* pagamento NÃO concluído */
+	if (pagament =='n')                                   /* pagamento NÃO concluído */
 	{
 	remove ("lista_pedido.txt");
 	system ("MENU");
