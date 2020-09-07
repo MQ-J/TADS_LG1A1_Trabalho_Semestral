@@ -7,9 +7,9 @@
 /*VARIÁVEIS*/
 char lc_all;
 char op;
-int quant_sandu;
-int quant_coca;
-int quant_pao;
+int quant_sandu, valor_sandu;
+int quant_coca, valor_coca;
+int quant_pao, valor_pao;
 FILE * arq;
 char op2;
 
@@ -23,9 +23,9 @@ int main()
 	setlocale (lc_all, "");
 	printf("========= PEDIDO ==========\n\n");
 	printf("         opções:         \n");
-	printf(" a. Sanduíche de presunto \n");
-	printf(" s. Coca-cola de café     \n");       /* Produtos a venda */
-	printf(" d. Pão de queijo         \n");
+	printf(" a. Sanduíche de presunto...R$ 8,00 \n");
+	printf(" s. Coca-cola de café.......R$ 5,00\n");       /* Produtos a venda */
+	printf(" d. Pão de queijo...........R$ 3,00\n\n");
 	printf(" f. Cancelar compra       \n");
 	printf(" j. Voltar ao menu        \n\n");
 	
@@ -35,9 +35,10 @@ int main()
 	if (op == 'a') /* SANDUÍCHE */
 	{
 	printf ("\n\nQuantos?\n");
-	scanf ("%u", &quant_sandu);
+	scanf ("%i", &quant_sandu);
+	valor_sandu = quant_sandu * 8;
 	arq = fopen ("lista_pedido.txt", "a"); /* criando arquivo com lista de pedido */
-	fprintf(arq,"\nSanduíches de presunto: %u", quant_sandu);
+	fprintf(arq,"\nSanduíches de presunto (%i)...R$ %i,00", quant_sandu, valor_sandu);
 	fclose(arq);
 	printf ("\n\nMais alguma coisa? [s=sim] [n=não]\n");
 	fflush (stdin);
@@ -50,9 +51,10 @@ int main()
 	if (op == 's') /* COCA */
 	{
 	printf ("\n\nQuantos?\n");
-	scanf ("%u", &quant_coca);
+	scanf ("%i", &quant_coca);
+	valor_coca = quant_coca * 5;
 	arq = fopen ("lista_pedido.txt", "a"); /* criando arquivo com lista de pedidos */
-	fprintf(arq,"\nCocas: %u", quant_coca);
+	fprintf(arq,"\nCocas (%i)....................R$ %i,00", quant_coca, valor_coca);
 	fclose(arq);
 	printf ("\n\nMais alguma coisa? [s=sim] [n=não]\n");
 	fflush (stdin);
@@ -65,9 +67,10 @@ int main()
 	if (op == 'd') /* PÃO DE QUEIJO */
 	{
 	printf ("\n\nQuantos?\n");
-	scanf ("%u", &quant_pao);
+	scanf ("%i", &quant_pao);
+	valor_pao = quant_pao * 3;
 	arq = fopen ("lista_pedido.txt", "a"); /* criando arquivo com lista de pedidos */
-	fprintf(arq,"\nPães de queijo: %u", quant_pao);
+	fprintf(arq,"\nPães de queijo (%i)...........R$ %i,00", quant_pao, valor_pao);
 	fclose(arq);
 	printf ("\n\nMais alguma coisa? [s=sim] [n=não]\n");
 	fflush (stdin);
@@ -90,6 +93,6 @@ int main()
 	}
 	if (op == 'j') /* VOLTA AO PROGRAMA MENU */
 	retorno_menu:
-	system ("MENU_MQ");
+	system ("MENU");
 	return 0;
 }

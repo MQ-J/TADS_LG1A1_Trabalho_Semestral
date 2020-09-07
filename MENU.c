@@ -29,11 +29,11 @@ int main()
 	
 	/*chama o respectivo programa filho*/
 	if (op == '1')
-	system ("PEDIDO_MQ");
+	system ("PEDIDO");
 	if (op == '2')
-	system("PAGUE_MQ");
+	system("PAGUE");
 	if (op =='3')
-	system("LEVE_MQ");
+	system("LEVE");
 	if (op =='s')
 	exit(0);
 	return 0;

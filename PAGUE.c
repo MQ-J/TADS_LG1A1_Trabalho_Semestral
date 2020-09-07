@@ -6,7 +6,7 @@
 
 /*VARIÁVEIS*/
 char lc_all;
-int entrega;
+int pagament;
 
 /*CORPO DO PROGRAMA*/
 int main()
@@ -14,13 +14,15 @@ int main()
 	system("color b0");
 	system("cls");
 	setlocale (lc_all, "");
-	printf("========= LEVE ==========\n\n");
-	printf ("Pedido entregue? [s=sim] [n=não]\n");
+	printf("========= PAGUE ==========\n\n");
+	printf("O Pagamento foi realizado? [s=sim] [n=não]\n");
 	fflush (stdin);
-	scanf ("%c", &entrega);
-	if (entrega == 's')
+	scanf ("%c", &pagament);
+	if (pagament =='s') /* pagamento concluído*/
+	system ("LEVE");
+	if (pagament =='n') /* pagamento NÃO concluído */
 	{
 	remove ("lista_pedido.txt");
-	system ("MENU_MQ");
+	system ("MENU");
 	}
 }
