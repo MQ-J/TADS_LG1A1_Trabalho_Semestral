@@ -28,13 +28,12 @@ int main()
 	op = getche ();	/*captura a opção escolhida*/
 	
 	/*chama o respectivo programa filho*/
-	if (op == '1')
-	system ("PEDIDO");
-	if (op == '2')
-	system("PAGUE");
-	if (op =='3')
-	system("LEVE");
-	if (op =='s')
-	exit(0);
+	switch (op)
+	{
+	case '1': system ("PEDIDO"); break;
+	case '2': system("PAGUE"); break;
+	case '3': system("LEVE"); break;
+	case 'S': case 's': exit(0); break;
+	}
 	return 0;
 }
