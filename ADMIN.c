@@ -23,20 +23,29 @@ void cadastro(void)
 	setlocale(LC_ALL,"");                                                                            /*variáveis locais e outras definições*/
 	char op;
 	
-	produtos = fopen("PRODUTOS.DAT", "w"); if (fopen == NULL) reg.codigo = 1;
-	fseek(produtos, 0, SEEK_END);
-	reg.codigo = ftell(produtos) / sizeof(reg);                                                   /*contagem autonumérica do código do produto*/
-	if (reg.codigo == 0) reg.codigo = 1;
+	produtos = fopen("PRODUTOS.DAT", "r");
+	if (fopen == NULL)
+		reg.codigo = 1;	
+	else
+	{
+		if (fseek(produtos, 0, SEEK_END))
+			reg.codigo =1;
+		else
+		{
+			reg.codigo = (ftell(produtos) / sizeof(reg))+1;                                  /*contagem autonumérica que ignora o erro do fseek*/
+		}
+	}
 	fclose(produtos);
-	
+
 	printf("\n\n\tInsira o nome do produto: "); fflush(stdin); gets(reg.nome);
-	printf("\tInsira o valor do produto: "); fflush(stdin); scanf("%f", &reg.custo);                /*definindo nome e valor do produto*/
+	printf("\tInsira o valor do produto: "); fflush(stdin); scanf("%f", &reg.custo);                 /*definindo nome e valor do produto*/
 	produtos = fopen("PRODUTOS.DAT", "a"); if (fopen == NULL) produtos = fopen("PRODUTOS.DAT", "w");
 	fwrite(&reg, sizeof(reg), 1, produtos);
 	fclose(produtos);
 	
 	printf("\n\tCadastrar novo produto? [s = sim] [qualquer outra tecla = não]\n\t");
-	fflush(stdin); op = getche(); switch(op)                                                        /*pergunta se quer cadastrar outro produto*/
+	fflush(stdin); op = getche();                                                                    /*pergunta se quer cadastrar outro produto*/
+	switch(op)
 	{
 		case's': case'S': cadastro(); break;
 		default: main();
@@ -51,20 +60,23 @@ void verifica(void)
 	char op;
 	
 	produtos = fopen("PRODUTOS.DAT", "r");
-	if (fopen == NULL)
+	if (produtos == NULL)
 	{
-		printf("\n\tERRO! Crie um produto ou verifique os existentes");                           /*tenta abrir o arquivo .dat*/
+		printf("\n\n\tERRO! Crie um produto ou verifique os existentes");                           /*tenta abrir o arquivo .dat*/
 		getch();
-		exit(0);
+		main();
 	}
 	
-	printf("\n\n\tcodigo       nome do produto          valor");
+	printf("\n\n\t-------------------------------------------");
+	printf("\n\tcodigo  |    nome do produto       | valor ");
+	printf("\n\t-------------------------------------------");
 	while( !feof(produtos))
 	{
 		fread(&reg, sizeof(reg), 1, produtos);                   /*salva os dados do arquivo .dat na estrutura ao invés de buscar diretamente por segurança*/
 		if ( !feof(produtos) )                                                              /*    e aproveita o loop para mostrar   */
-		printf("\n\t%i            %-22s   %.2f", reg.codigo, reg.nome, reg.custo);          /*    os produtos existentes na tela    */ 
+		printf("\n\t%-2i      |    %-22s| %-5.2f", reg.codigo, reg.nome, reg.custo);          /*    os produtos existentes na tela    */ 
 	}
+	printf("\n\t-------------------------------------------");
 	fclose(produtos);
 	
 	printf("\n\tPressione qualquer tecla para voltar ao menu\n\t");
@@ -96,7 +108,8 @@ int main()
 		case'2': verifica(); break;                      /*captura a opção e chama a respectiva função*/
 		case'3': system("MENU"); break;
 		case's': case 'S': exit(0); break;
-		default: printf("Opção inválida"); fflush(stdin); getch(); 
+		default: printf("\n\n\tOpção inválida"); printf("\n\tPressione qualquer tecla para voltar ao menu\n\t");
+		fflush(stdin); getch();
 		main();
 	}
 	return(0);
