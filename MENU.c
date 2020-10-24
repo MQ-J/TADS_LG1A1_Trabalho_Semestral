@@ -42,5 +42,5 @@ int main()
 	if (op2 == 'a')
 	main();
 	}
-	return 0;
+	return (0);
 }

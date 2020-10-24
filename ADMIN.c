@@ -3,18 +3,7 @@
 #include <conio.h>
 #include <stdlib.h>
 #include <locale.h>
-
-/*ESTRUTURAS DE DADOS*/
-typedef struct
-{
-	int codigo;
-	char nome[22+1];
-	float custo;
-} registro;
-
-/*VARIÁVEIS GERAIS*/
-registro reg;
-FILE * produtos;
+#include "dados.h"
 
 /*CADASTRAR PROUTOS*/
 void cadastro(void)
@@ -23,25 +12,25 @@ void cadastro(void)
 	setlocale(LC_ALL,"");                                                                            /*variáveis locais e outras definições*/
 	char op;
 	
-	produtos = fopen("PRODUTOS.DAT", "r");
+	PRODUTOS = fopen("PRODUTOS.DAT", "r");
 	if (fopen == NULL)
-		reg.codigo = 1;	
+		prod.codigo = 1;	
 	else
 	{
-		if (fseek(produtos, 0, SEEK_END))
-			reg.codigo =1;
+		if (fseek(PRODUTOS, 0, SEEK_END))
+			prod.codigo =1;
 		else
 		{
-			reg.codigo = (ftell(produtos) / sizeof(reg))+1;                                  /*contagem autonumérica que ignora o erro do fseek*/
+			prod.codigo = (ftell(PRODUTOS) / sizeof(prod))+1;                                  /*contagem autonumérica que ignora o erro do fseek*/
 		}
 	}
-	fclose(produtos);
+	fclose(PRODUTOS);
 
-	printf("\n\n\tInsira o nome do produto: "); fflush(stdin); gets(reg.nome);
-	printf("\tInsira o valor do produto: "); fflush(stdin); scanf("%f", &reg.custo);                 /*definindo nome e valor do produto*/
-	produtos = fopen("PRODUTOS.DAT", "a"); if (fopen == NULL) produtos = fopen("PRODUTOS.DAT", "w");
-	fwrite(&reg, sizeof(reg), 1, produtos);
-	fclose(produtos);
+	printf("\n\n\tInsira o nome do produto: "); fflush(stdin); gets(prod.nome);
+	printf("\tInsira o valor do produto: "); fflush(stdin); scanf("%f", &prod.custo);                 /*definindo nome e valor do produto*/
+	PRODUTOS = fopen("PRODUTOS.DAT", "a"); if (fopen == NULL) PRODUTOS = fopen("PRODUTOS.DAT", "w");
+	fwrite(&prod, sizeof(prod), 1, PRODUTOS);
+	fclose(PRODUTOS);
 	
 	printf("\n\tCadastrar novo produto? [s = sim] [qualquer outra tecla = não]\n\t");
 	fflush(stdin); op = getche();                                                                    /*pergunta se quer cadastrar outro produto*/
@@ -59,10 +48,10 @@ void verifica(void)
 	setlocale(LC_ALL,"");
 	char op;
 	
-	produtos = fopen("PRODUTOS.DAT", "r");
-	if (produtos == NULL)
+	PRODUTOS = fopen("PRODUTOS.DAT", "r");
+	if (PRODUTOS == NULL)
 	{
-		printf("\n\n\tERRO! Crie um produto ou verifique os existentes");                           /*tenta abrir o arquivo .dat*/
+		printf("\n\n\tERRO! Crie um produto ou verifique os existentes");                          /*tenta abrir o arquivo .dat*/
 		getch();
 		main();
 	}
@@ -70,14 +59,14 @@ void verifica(void)
 	printf("\n\n\t-------------------------------------------");
 	printf("\n\tcodigo  |    nome do produto       | valor ");
 	printf("\n\t-------------------------------------------");
-	while( !feof(produtos))
+	while( !feof(PRODUTOS))
 	{
-		fread(&reg, sizeof(reg), 1, produtos);                   /*salva os dados do arquivo .dat na estrutura ao invés de buscar diretamente por segurança*/
-		if ( !feof(produtos) )                                                              /*    e aproveita o loop para mostrar   */
-		printf("\n\t%-2i      |    %-22s| %-5.2f", reg.codigo, reg.nome, reg.custo);          /*    os produtos existentes na tela    */ 
+		fread(&prod, sizeof(prod), 1, PRODUTOS);                   /*salva os dados do arquivo .dat na estrutura ao invés de buscar diretamente por segurança*/
+		if ( !feof(PRODUTOS) )                                                              /*    e aproveita o loop para mostrar   */
+		printf("\n\t%-2i      |    %-22s| %-5.2f", prod.codigo, prod.nome, prod.custo);     /*    os produtos existentes na tela    */ 
 	}
 	printf("\n\t-------------------------------------------");
-	fclose(produtos);
+	fclose(PRODUTOS);
 	
 	printf("\n\tPressione qualquer tecla para voltar ao menu\n\t");
 	fflush(stdin); getch();
