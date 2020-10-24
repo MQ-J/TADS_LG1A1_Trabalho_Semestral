@@ -3,6 +3,7 @@
 #include <conio.h>
 #include <stdlib.h>
 #include <locale.h>
+#include "dados.h"
 
 /*VARIÁVEIS*/
 char lc_all;
@@ -24,11 +25,21 @@ int main()
 	setlocale (lc_all, "");
 	printf("========= PEDIDO ==========\n\n");
 	printf("         opções:         \n");
-	printf(" a. Sanduíche de presunto...R$ 8,00 \n");
-	printf(" s. Coca-cola de café.......R$ 5,00\n");       /* Produtos a venda */
-	printf(" d. Pão de queijo...........R$ 3,00\n\n");
-	printf(" f. Cancelar compra       \n");
-	printf(" j. Voltar ao menu        \n\n");
+	printf("\n\n-------------------------------------------");
+	printf("\ncodigo  |    nome do produto       | valor ");
+	printf("\n-------------------------------------------");
+	PRODUTOS = fopen("PRODUTOS.DAT", "r");
+	while( !feof(PRODUTOS))
+	{
+		fread(&prod, sizeof(prod), 1, PRODUTOS);
+		if ( !feof(PRODUTOS) )
+		printf("\n%-2i      |    %-22s| %-5.2f", prod.codigo, prod.nome, prod.custo);
+	}
+	printf("\n-------------------------------------------");
+	printf("\n        | f. Cancelar compra       |");
+	printf("\n        | j. Voltar ao menu        |");
+	printf("\n-------------------------------------------");
+	fclose(PRODUTOS);
 	
 	fflush (stdin);
 	op = getche();/* captura a opção escolida*/

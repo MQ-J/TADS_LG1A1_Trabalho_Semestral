@@ -3,14 +3,13 @@
 #include <conio.h>
 #include <stdlib.h>
 #include <locale.h>
+#include "dados.h"
 
 /*VARIÁVEIS*/
 char lc_all;
-char pagament, op;
-int op_card, conta_digito;
-int tam;
-FILE * arq;
-int preco_total;
+char op_pagament, op;
+int conta_digito;
+int numb;
 
 /*CORPO DO PROGRAMA*/
 int main()
@@ -18,32 +17,62 @@ int main()
 	system("color b0");
 	system("cls");
 	setlocale (lc_all, "");
+	float precototal;
 	printf("========= PAGUE ==========\n\n");
 	
-	arq = fopen ("lista_pedido.txt", "r");
-	tam= -2;
-	fseek(arq, tam, SEEK_END);                         /* busca o valor total da compra no recibo */
-	while (!feof(arq))
-	fscanf(arq, "%i", &preco_total);
-	fclose(arq);
-	printf("Preço total: R$ %i", preco_total); 
+	PEDIDOS = fopen ("PEDIDOS.DAT", "r");
+	while (!feof(PEDIDOS))
+	fread(&pedi, sizeof(pedi), 1, PEDIDOS);
+	fclose(PEDIDOS);
+	precototal = pedi.custototal;                              /*busca o valor total da compra no arquivo PEDIDOS.DAT para mostrar na tela*/
+	printf("Preço total: R$ %.2f", precototal); 
 	
 	printf("\n\nQual a forma de pagamento?");
 	printf("\n\n a = dinheiro\n b = cartão de débito/crédito\n c = cheque\n\n");
-	fflush(stdin);
-	scanf ("%c", &pagament);
-	switch (pagament)
+	fflush(stdin);	scanf("%c", &op_pagament);
+	switch (op_pagament)
 	{
-		case 'a': case 'A': case 'c': case 'C':
-		printf("Pagamento concuído?\n");
-		fflush(stdin);
-		scanf ("%c", &op);
-		if (op == 's')                                         /*pagamento concluído*/
-		system ("LEVE");
-		if (op =='n')                                       /* pagamento NÃO concluído */
+		case 'a': case 'A':
+		printf("Pagamento concuído? [s=im] [n=não]\n");
+		fflush(stdin);	scanf("%c", &op);
+		switch (op)
 		{
-			remove ("lista_pedido.txt");
+			case's': case'S':                                              /*pagamento concluído*/
+			pagto.codigo = contagem(pagto.codigo);
+			strcpy(pagto.forma, "dinheiro");
+			pagto.valor = pedi.custototal;
+			PAGAMENTOS = fopen("PAGAMENTOS.DAT", "a");
+			fwrite(&pagto, sizeof(pagto), 1, PAGAMENTOS);
+			fclose(PAGAMENTOS);
+			system ("LEVE");
+			break;
+			
+			case'n': case'N':                                            /* pagamento NÃO concluído */
 			system ("MENU");
+			break;
+		}
+		break;
+		
+		
+		case 'c': case 'C':
+		printf("Pagamento concuído? [s=im] [n=não]\n");
+		fflush(stdin);	scanf("%c", &op);
+		switch (op)
+		{
+			case's': case'S':                                              /*pagamento concluído*/
+			/*contagem auto numerica do numero do pedido*/
+			pagto.codigo++;
+			strcpy(pagto.forma, "cheque");
+			pagto.valor = pedi.custototal;
+			PAGAMENTOS = fopen("PAGAMENTOS.DAT", "a");
+			fwrite(&pagto, sizeof(pagto), 1, PAGAMENTOS);
+			fclose(PAGAMENTOS);
+			system ("LEVE");
+			break;
+			
+			case'n': case'N':                                            /* pagamento NÃO concluído */
+			system ("MENU");
+			break;
 		}
 		break;
 		
@@ -53,20 +82,29 @@ int main()
 		fflush(stdin);
 		do
 		{
-			op_card = getch();
+			numb = getch();
 			printf("*");
 			conta_digito++;
 		}
 		while (conta_digito <= 15);
-		printf("\nPagamento concuído?\n");
-		fflush(stdin);
-		scanf ("%c", &op);
-		if (op == 's')                                         /*pagamento concluído*/
-		system ("LEVE");
-		if (op =='n')                                       /* pagamento NÃO concluído */
+		printf("Pagamento concuído? [s=im] [n=não]\n");
+		fflush(stdin);	scanf("%c", &op);
+		switch (op)
 		{
-			remove ("lista_pedido.txt");
+			case's': case'S':                                              /*pagamento concluído*/
+			/*contagem auto numerica do numero do pedido*/
+			pagto.codigo++;
+			strcpy(pagto.forma, "cartao");
+			pagto.valor = pedi.custototal;
+			PAGAMENTOS = fopen("PAGAMENTOS.DAT", "a");
+			fwrite(&pagto, sizeof(pagto), 1, PAGAMENTOS);
+			fclose(PAGAMENTOS);
+			system ("LEVE");
+			break;
+			
+			case'n': case'N':                                            /* pagamento NÃO concluído */
 			system ("MENU");
+			break;
 		}
 		break;
 	}
