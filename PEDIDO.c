@@ -6,7 +6,6 @@
 #include "dados.h"
 
 /*VARIÁVEIS*/
-char lc_all;
 char op;
 int quant_sandu, valor_sandu;
 int quant_coca, valor_coca;
@@ -22,16 +21,16 @@ int main()
 	inicio:
 	system("color b0");
 	system("cls");
-	setlocale (lc_all, "");
-	printf("========= PEDIDO ==========\n\n");
-	printf("         opções:         \n");
-	printf("\n\n-------------------------------------------");
-	printf("\ncodigo  |    nome do produto       | valor ");
+	setlocale (LC_ALL, "");
+	printf("================= PEDIDO ==================\n");
+	printf("           Produtos disponíveis:             ");
+	printf("\n-------------------------------------------");
+	printf("\ncodigo  |    nome do produto       | valor ");                                    /*cabeçalho do menu*/
 	printf("\n-------------------------------------------");
 	PRODUTOS = fopen("PRODUTOS.DAT", "r");
 	while( !feof(PRODUTOS))
 	{
-		fread(&prod, sizeof(prod), 1, PRODUTOS);
+		fread(&prod, sizeof(prod), 1, PRODUTOS);                                          /*busca a lista de produtos em PRODUTOS.DAT*/
 		if ( !feof(PRODUTOS) )
 		printf("\n%-2i      |    %-22s| %-5.2f", prod.codigo, prod.nome, prod.custo);
 	}

@@ -35,8 +35,9 @@ typedef struct
 typedef struct
 {
 	int codigo;
-	int numbcartao;
+	int numbcartao[16];
 } cartoes;
+
 /*---------------------------------------*/
 
 /*VARIÁVEIS DAS ESTRUTURAS*/
@@ -48,15 +49,67 @@ typedef struct
 
 /*ENDEREÇO DE MEMÓRIA DOS ARQUIVOS .DAT*/
 	FILE * PRODUTOS;
-	FILE * PAGAMENTOS;                       /*os endereços tem o mesmo nome das respectivas estruturas para facilitar o entendimento*/
+	FILE * PAGAMENTOS;                                      /*os endereços tem o mesmo nome das respectivas estruturas para facilitar o entendimento*/
 	FILE * CARTOES;
 	FILE * PEDIDOS;
 /*---------------------------------------*/
 
-/*FUNÇÃO DE CONTAGEM AUTONUMÉRICA*/
-int contagem(int valor)
+/*FUNÇÃO DE CONTAGEM AUTONUMÉRICA DE PRODUTOS*/
+int conta_quant_produtos()
 {
-	valor++;
-	return(valor);
+	PRODUTOS = fopen("PRODUTOS.DAT", "r");
+	if (fopen == NULL)
+		prod.codigo = 1;	
+	else
+	{
+		if (fseek(PRODUTOS, 0, SEEK_END))
+			prod.codigo =1;
+		else
+		{
+			prod.codigo = (ftell(PRODUTOS) / sizeof(prod))+1;                                  /*contagem autonumérica que ignora o erro do fseek*/
+		}
+	}
+	fclose(PRODUTOS);
+	return(prod.codigo);
 }
 
+/*FUNÇÃO DE CONTAGEM AUTONUMÉRICA DE PAGAMENTOS*/
+int conta_quant_pagamento()
+{
+	PAGAMENTOS = fopen("PAGAMENTOS.DAT", "r");
+	if (fopen == NULL)
+		prod.codigo = 1;	
+	else
+	{
+		if (fseek(PAGAMENTOS, 0, SEEK_END))
+			prod.codigo =1;
+		else
+		{
+			pagto.codigo = (ftell(PAGAMENTOS) / sizeof(pagto))+1;                              /*contagem autonumérica que ignora o erro do fseek*/
+		}
+	}
+	fclose(PAGAMENTOS);
+	return(pagto.codigo);
+}
+
+/*FUNÇÃO DE CONTAGEM AUTONUMÉRICA DE CARTÓES*/
+int conta_quant_cartao()
+{
+	CARTOES = fopen("CARTOES.DAT", "r");
+	if (fopen == NULL)
+	{
+		CARTOES = fopen("CARTOES.DAT", "w");
+		card.codigo = 1;
+	}
+	else
+	{
+		if (fseek(CARTOES, 0, SEEK_END))
+			card.codigo =1;
+		else
+		{
+			card.codigo = (ftell(CARTOES) / sizeof(card))+1;                              /*contagem autonumérica que ignora o erro do fseek*/
+		}
+	}
+	fclose(CARTOES);
+	return(card.codigo);
+}

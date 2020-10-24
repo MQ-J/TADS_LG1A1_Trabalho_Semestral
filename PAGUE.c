@@ -3,6 +3,7 @@
 #include <conio.h>
 #include <stdlib.h>
 #include <locale.h>
+#include <string.h>
 #include "dados.h"
 
 /*VARIÁVEIS*/
@@ -10,6 +11,92 @@ char lc_all;
 char op_pagament, op;
 int conta_digito;
 int numb;
+
+/*FUNÇÕES*/
+void confirma_pagto_a(void)
+{
+	printf("Pagamento concuído? [s=im] [n=não]\n");
+	fflush(stdin);	scanf("%c", &op);
+	switch (op)
+	{
+		case's': case'S':                                                      /*caso o pagamento seja concluído*/
+		pagto.codigo = conta_quant_pagamento();                            /*chama o programa de contagem autonumérica*/
+		strcpy(pagto.forma, "dinheiro");
+		pagto.valor = pedi.custototal;
+		PAGAMENTOS = fopen("PAGAMENTOS.DAT", "a");
+		fwrite(&pagto, sizeof(pagto), 1, PAGAMENTOS);      /*só após a confirmmação do pagamento os arquivos são enviados para PAGAMENTOS.DAT*/
+		fclose(PAGAMENTOS);
+		system ("LEVE");
+		break;
+
+		case'n': case'N':                                                         /* pagamento NÃO concluído */
+		system ("MENU");
+		break;
+	}
+}
+
+void confirma_pagto_b(void)
+{
+	printf("Pagamento concuído? [s=im] [n=não]\n");
+	fflush(stdin);	scanf("%c", &op);
+	switch (op)
+	{
+		case's': case'S':                                                        /*caso o pagamento seja concluído*/
+		pagto.codigo = conta_quant_pagamento();                             /*chama o programa de contagem autonumérica*/
+		strcpy(pagto.forma, "cartao");
+		pagto.valor = pedi.custototal;
+		PAGAMENTOS = fopen("PAGAMENTOS.DAT", "a");
+		fwrite(&pagto, sizeof(pagto), 1, PAGAMENTOS);        /*só após a confirmmação do pagamento os arquivos são enviados para PAGAMENTOS.DAT*/
+		fclose(PAGAMENTOS);
+		
+		CARTOES = fopen("CARTOES.DAT", "r");
+		fwrite(&card, sizeof(card), 1, CARTOES);            /*os arquivos só são enviados para o CARTOES.DAT quando o pagamento é aprovado*/
+		fclose(CARTOES);
+	
+		system ("LEVE");
+		break;
+
+		case'n': case'N':                                                          /* pagamento NÃO concluído */
+		system ("MENU");
+		break;
+	}
+}
+
+void confirma_pagto_c(void)
+{
+	printf("Pagamento concuído? [s=im] [n=não]\n");
+	fflush(stdin);	scanf("%c", &op);
+	switch (op)
+	{
+		case's': case'S':                                                     /*caso o pagamento seja concluído*/
+		pagto.codigo = conta_quant_pagamento();                            /*chama o programa de contagem autonumérica*/
+		strcpy(pagto.forma, "cheque");
+		pagto.valor = pedi.custototal;
+		PAGAMENTOS = fopen("PAGAMENTOS.DAT", "a");
+		fwrite(&pagto, sizeof(pagto), 1, PAGAMENTOS);      /*só após a confirmmação do pagamento os arquivos são enviados para PAGAMENTOS.DAT*/
+		fclose(PAGAMENTOS);
+		system ("LEVE");
+		break;
+
+		case'n': case'N':                                                        /* pagamento NÃO concluído */
+		system ("MENU");
+		break;
+	}
+}
+
+void confirma_cartao(void)
+{
+	int i;
+	card.codigo = conta_quant_cartao();
+	printf("Digite o número do cartão: ");
+	for(i=0; i<=16; i++)
+	{
+		fflush(stdin);	card.numbcartao[i] = getche();
+		printf("*");
+	}
+	for(i = 4; i <=11; i++)
+	card.numbcartao[i] = '*';
+}
 
 /*CORPO DO PROGRAMA*/
 int main()
@@ -33,79 +120,17 @@ int main()
 	switch (op_pagament)
 	{
 		case 'a': case 'A':
-		printf("Pagamento concuído? [s=im] [n=não]\n");
-		fflush(stdin);	scanf("%c", &op);
-		switch (op)
-		{
-			case's': case'S':                                              /*pagamento concluído*/
-			pagto.codigo = contagem(pagto.codigo);
-			strcpy(pagto.forma, "dinheiro");
-			pagto.valor = pedi.custototal;
-			PAGAMENTOS = fopen("PAGAMENTOS.DAT", "a");
-			fwrite(&pagto, sizeof(pagto), 1, PAGAMENTOS);
-			fclose(PAGAMENTOS);
-			system ("LEVE");
-			break;
-			
-			case'n': case'N':                                            /* pagamento NÃO concluído */
-			system ("MENU");
-			break;
-		}
-		break;
-		
-		
-		case 'c': case 'C':
-		printf("Pagamento concuído? [s=im] [n=não]\n");
-		fflush(stdin);	scanf("%c", &op);
-		switch (op)
-		{
-			case's': case'S':                                              /*pagamento concluído*/
-			/*contagem auto numerica do numero do pedido*/
-			pagto.codigo++;
-			strcpy(pagto.forma, "cheque");
-			pagto.valor = pedi.custototal;
-			PAGAMENTOS = fopen("PAGAMENTOS.DAT", "a");
-			fwrite(&pagto, sizeof(pagto), 1, PAGAMENTOS);
-			fclose(PAGAMENTOS);
-			system ("LEVE");
-			break;
-			
-			case'n': case'N':                                            /* pagamento NÃO concluído */
-			system ("MENU");
-			break;
-		}
+		confirma_pagto_a();
 		break;
 		
 		case 'b': case 'B':
-		conta_digito = 0;
-		printf("Digite o número do cartão: ");
-		fflush(stdin);
-		do
-		{
-			numb = getch();
-			printf("*");
-			conta_digito++;
-		}
-		while (conta_digito <= 15);
-		printf("Pagamento concuído? [s=im] [n=não]\n");
-		fflush(stdin);	scanf("%c", &op);
-		switch (op)
-		{
-			case's': case'S':                                              /*pagamento concluído*/
-			/*contagem auto numerica do numero do pedido*/
-			pagto.codigo++;
-			strcpy(pagto.forma, "cartao");
-			pagto.valor = pedi.custototal;
-			PAGAMENTOS = fopen("PAGAMENTOS.DAT", "a");
-			fwrite(&pagto, sizeof(pagto), 1, PAGAMENTOS);
-			fclose(PAGAMENTOS);
-			system ("LEVE");
-			break;
-			
-			case'n': case'N':                                            /* pagamento NÃO concluído */
-			system ("MENU");
-			break;
-		}
+		confirma_cartao();
+		confirma_pagto_b();
+		break;
+		
+		case 'c': case 'C':
+		confirma_pagto_c();
 		break;
 	}
+	return (0);
 }

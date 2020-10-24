@@ -12,20 +12,8 @@ void cadastro(void)
 	setlocale(LC_ALL,"");                                                                            /*variáveis locais e outras definições*/
 	char op;
 	
-	PRODUTOS = fopen("PRODUTOS.DAT", "r");
-	if (fopen == NULL)
-		prod.codigo = 1;	
-	else
-	{
-		if (fseek(PRODUTOS, 0, SEEK_END))
-			prod.codigo =1;
-		else
-		{
-			prod.codigo = (ftell(PRODUTOS) / sizeof(prod))+1;                                  /*contagem autonumérica que ignora o erro do fseek*/
-		}
-	}
-	fclose(PRODUTOS);
-
+	prod.codigo = conta_quant_produtos();                                                           /*chama o programa de contagem autonumérica*/
+	
 	printf("\n\n\tInsira o nome do produto: "); fflush(stdin); gets(prod.nome);
 	printf("\tInsira o valor do produto: "); fflush(stdin); scanf("%f", &prod.custo);                 /*definindo nome e valor do produto*/
 	PRODUTOS = fopen("PRODUTOS.DAT", "a"); if (fopen == NULL) PRODUTOS = fopen("PRODUTOS.DAT", "w");
@@ -44,7 +32,7 @@ void cadastro(void)
 /*VERIFICAR PRODUTOS*/
 void verifica(void)
 {
-	system("color 0b");                                                                    /*variáveis locais e outras definições*/
+	system("color 0b");                                                                     /*variáveis locais e outras definições*/
 	setlocale(LC_ALL,"");
 	char op;
 	
@@ -61,7 +49,7 @@ void verifica(void)
 	printf("\n\t-------------------------------------------");
 	while( !feof(PRODUTOS))
 	{
-		fread(&prod, sizeof(prod), 1, PRODUTOS);                   /*salva os dados do arquivo .dat na estrutura ao invés de buscar diretamente por segurança*/
+		fread(&prod, sizeof(prod), 1, PRODUTOS);                   /*lê os dados do arquivo .dat na estrutura ao invés de buscar diretamente por segurança*/
 		if ( !feof(PRODUTOS) )                                                              /*    e aproveita o loop para mostrar   */
 		printf("\n\t%-2i      |    %-22s| %-5.2f", prod.codigo, prod.nome, prod.custo);     /*    os produtos existentes na tela    */ 
 	}
@@ -88,16 +76,18 @@ int main()
 	printf("\t|--------------------|\n\n");                            /*menu de opções*/
 	printf("\t1 - Cadastrar produtos\n");
 	printf("\t2 - Verificar produtos\n");
-	printf("\t3 - Vender produtos   \n");
+	printf("\t3 - Vender os produtos\n");
 	printf("\ts - Sair              \n\n\t");
 	
-	fflush(stdin); op = getche(); switch(op)
+	fflush(stdin); op = getche();
+	switch(op)
 	{
 		case'1': cadastro(); break;
 		case'2': verifica(); break;                      /*captura a opção e chama a respectiva função*/
 		case'3': system("MENU"); break;
 		case's': case 'S': exit(0); break;
-		default: printf("\n\n\tOpção inválida"); printf("\n\tPressione qualquer tecla para voltar ao menu\n\t");
+		default: printf("\n\n\tOpção inválida");
+		printf("\n\tPressione qualquer tecla para voltar ao menu\n\t");
 		fflush(stdin); getch();
 		main();
 	}
