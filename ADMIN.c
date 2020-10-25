@@ -13,7 +13,15 @@ void cadastro(void)
 	setlocale(LC_ALL,"");                                                                            /*variáveis locais e outras definições*/
 	char op;
 	
-	prod.codigo = conta_quant_produtos();                                                           /*chama o programa de contagem autonumérica*/
+	PRODUTOS = fopen("PRODUTOS.DAT", "r");
+	if (fopen == NULL)
+	{
+		prod.codigo = 1;
+	}
+	else
+	{
+		prod.codigo = conta_quant_produtos();                                                           /*chama o programa de contagem autonumérica*/
+	}
 	
 	printf("\tInsira o nome do produto: "); fflush(stdin); gets(prod.nome);
 	printf("\tInsira o valor do produto: "); fflush(stdin); scanf("%f", &prod.custo);                 /*definindo nome e valor do produto*/
@@ -52,7 +60,7 @@ void verifica(void)
 	{
 		fread(&prod, sizeof(prod), 1, PRODUTOS);                   /*lê os dados do arquivo .dat na estrutura ao invés de buscar diretamente por segurança*/
 		if ( !feof(PRODUTOS) )                                                              /*    e aproveita o loop para mostrar   */
-		printf("\n\t%-2i      |    %-22s| %-5.2f", prod.codigo, prod.nome, prod.custo);     /*    os produtos existentes na tela    */ 
+		printf("\n\t%-2i      |  %-22s| %-5.2f", prod.codigo, prod.nome, prod.custo);     /*    os produtos existentes na tela    */ 
 	}
 	printf("\n\t-------------------------------------------");
 	fclose(PRODUTOS);
@@ -83,7 +91,7 @@ void listapedidos (void)
 	{
 		fread(&pagto, sizeof(pagto), 1, PEDIDOS);                   /*lê os dados do arquivo .dat na estrutura ao invés de buscar diretamente por segurança*/
 		if ( !feof(PEDIDOS) )                                                              /*    e aproveita o loop para mostrar   */
-		printf("\n\t%-2i      |    %-22s| %-5.2f", pagto.codigo	, pagto.forma, pagto.valor);     /*    os produtos existentes na tela    */ 
+		printf("\n\t%-2i      |  %-22s| %-5.2f", pagto.codigo	, pagto.forma, pagto.valor);     /*    os produtos existentes na tela    */ 
 	}
 	printf("\n\t-------------------------------------------");
 	fclose(PEDIDOS);
@@ -94,23 +102,20 @@ void listapedidos (void)
 void listacartoes (void)
 {
 	CARTOES = fopen ("CARTOES.DAT", "r");
-	if (CARTOES == NULL)
+	if (CARTOES != NULL)
 	{
-		printf("\n\n\tERRO! Crie um pedido");                          /*tenta abrir o arquivo .dat*/
-		getch();
-		main();
+		printf("\n\t-------------------------------------------");
+		printf("\n\tcodigo  |   código do cartão ");
+		printf("\n\t-------------------------------------------");
+		while(fread(&card, sizeof(card), 1, CARTOES))
+		{
+			if (card.codigo > 0)
+			if ( !feof(CARTOES) )                                                              /*    e aproveita o loop para mostrar   */
+			printf("\n\t%i       |    %-20s", card.codigo, card.numbcartao);     /*    os produtos existentes na tela    */ 
+		}
+		fclose(CARTOES);
+		printf("\n\t-------------------------------------------");
 	}
-	printf("\n\t-------------------------------------------");
-	printf("\n\tcodigo  |   código do cartão ");
-	printf("\n\t-------------------------------------------");
-	while( !feof(CARTOES))
-	{
-		fread(&card, sizeof(card), 1, CARTOES);                   /*lê os dados do arquivo .dat na estrutura ao invés de buscar diretamente por segurança*/
-		if ( !feof(CARTOES) )                                                              /*    e aproveita o loop para mostrar   */
-		printf("\n\t%-2i      |    %-20s", card.codigo, card.numbcartao);     /*    os produtos existentes na tela    */ 
-	}
-	printf("\n\t-------------------------------------------");
-	fclose(CARTOES);
 	
 	printf("\n\tPressione qualquer tecla para voltar ao menu\n\t");
 	fflush(stdin); getch();
@@ -142,7 +147,7 @@ int main()
 		case'1': cadastro(); break;
 		case'2': verifica(); break;                      /*captura a opção e chama a respectiva função*/
 		case'3': listapedidos(); listacartoes(); break;
-		case'4': system("MENU"); break;
+		case'4': system("VENDAS"); break;
 		case's': case 'S': exit(0); break;
 		default: printf("\n\n\tOpção inválida");
 		printf("\n\tPressione qualquer tecla para voltar ao menu\n\t");

@@ -68,14 +68,14 @@ int conta_quant_produtos()
 {
 	PRODUTOS = fopen("PRODUTOS.DAT", "r");
 	if (fopen == NULL)
-		prod.codigo = 1;	
+		prod.codigo = 0;	
 	else
 	{
 		if (fseek(PRODUTOS, 0, SEEK_END))
-			prod.codigo =1;
+			prod.codigo = 1;
 		else
 		{
-			prod.codigo = (ftell(PRODUTOS) / sizeof(prod))+1;                                  /*contagem autonumérica que ignora o erro do fseek*/
+			prod.codigo = (ftell(PRODUTOS) / sizeof(prod))+1;
 		}
 	}
 	fclose(PRODUTOS);
@@ -87,21 +87,21 @@ int conta_quant_pagamento()
 {
 	PAGAMENTOS = fopen("PAGAMENTOS.DAT", "r");
 	if (fopen == NULL)
-		prod.codigo = 1;	
+		prod.codigo = 0;	
 	else
 	{
 		if (fseek(PAGAMENTOS, 0, SEEK_END))
-			prod.codigo =1;
+			prod.codigo = 1;
 		else
 		{
-			pagto.codigo = (ftell(PAGAMENTOS) / sizeof(pagto))+1;                              /*contagem autonumérica que ignora o erro do fseek*/
+			pagto.codigo = (ftell(PAGAMENTOS) / sizeof(pagto))+1;
 		}
 	}
 	fclose(PAGAMENTOS);
 	return(pagto.codigo);
 }
 
-/*FUNÇÃO DE CADASTRO DE CARTÓES*/
+/*FUNÇÃO DE CADASTRO DE CARTÕES*/
 void cadastracartao(cartoes C)
 {
 	CARTOES = fopen("CARTOES.DAT", "a");
@@ -153,7 +153,7 @@ void PesquisarPedido (produtos * Ped)
 void RegistrarPedido (pagamentos criarpedido, char controle)
 {
 	if (controle == '1')
-		PEDIDOS = fopen ("ULTIMOPGTO.DAT", "w");
+		PEDIDOS = fopen ("ULTIMOPEDIDO.DAT", "w");
 	else
 		falha();
 	if (PEDIDOS == NULL)
