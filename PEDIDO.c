@@ -8,7 +8,6 @@
 
 /*VARIÁVEIS*/
 pedidos op;
-FILE * arq;
 int quantidadepedidos = 0;
 float total = 0;
 char sair;
@@ -31,6 +30,13 @@ int main()
 			printf("\ncodigo  |    nome do produto       | valor ");                                    /*cabeçalho do menu*/
 			printf("\n-------------------------------------------");
 			PRODUTOS = fopen("PRODUTOS.DAT", "r");
+			if (PRODUTOS == NULL)
+			{
+				system ("cls");
+				printf("\n\n\tERRO! Nenhum produto cadastrado");                          /*tenta abrir o arquivo .dat*/
+				getch();
+				system ("VENDAS");
+			}
 			while (!feof(PRODUTOS))
 			{
 				fread(&prod, sizeof(prod), 1, PRODUTOS);                                          /*busca a lista de produtos em PRODUTOS.DAT*/
@@ -81,7 +87,7 @@ int main()
     fflush (stdin);
 	system ("NOTEPAD TICKET.TXT");
 	registropagamentos.valor = total;
-	RegistrarPedido (registropagamentos, '1');
+	RegistrarPedido (registropagamentos, 1);
 	system ("VENDAS");
-	return 0;
+	return (0);
 }

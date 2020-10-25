@@ -3,9 +3,10 @@
 #include <conio.h>
 #include <stdlib.h>
 #include <locale.h>
+#include <string.h>
 #include "dados.h"
 
-/*CADASTRAR PROUTOS*/
+/*CADASTRAR PRODUTOS*/
 void cadastro(void)
 {
 	system("cls");
@@ -77,8 +78,8 @@ void listapedidos (void)
 	system("color 0b");                                                                     /*variáveis locais e outras definições*/
 	setlocale(LC_ALL,"");
 	
-	PEDIDOS = fopen("PAGAMENTOS.DAT", "r");
-	if (PEDIDOS == NULL)
+	PAGAMENTOS = fopen("PAGAMENTOS.DAT", "r");
+	if (PAGAMENTOS == NULL)
 	{
 		printf("\n\n\tERRO! Crie um pedido");                          /*tenta abrir o arquivo .dat*/
 		getch();
@@ -87,14 +88,14 @@ void listapedidos (void)
 	printf("\t-------------------------------------------");
 	printf("\n\tcodigo  |   forma de pagamento   | valor ");
 	printf("\n\t-------------------------------------------");
-	while( !feof(PEDIDOS))
+	while( !feof(PAGAMENTOS))
 	{
-		fread(&pagto, sizeof(pagto), 1, PEDIDOS);                   /*lê os dados do arquivo .dat na estrutura ao invés de buscar diretamente por segurança*/
-		if ( !feof(PEDIDOS) )                                                              /*    e aproveita o loop para mostrar   */
-		printf("\n\t%-2i      |  %-22s| %-5.2f", pagto.codigo	, pagto.forma, pagto.valor);     /*    os produtos existentes na tela    */ 
+		fread(&pagto, sizeof(pagto), 1, PAGAMENTOS);                   /*lê os dados do arquivo .dat na estrutura ao invés de buscar diretamente por segurança*/
+		if ( !feof(PAGAMENTOS) )                                                              /*    e aproveita o loop para mostrar   */
+		printf("\n\t%-2i      |  %-22s| %-5.2f", pagto.codigo, pagto.forma, pagto.valor);     /*    os produtos existentes na tela    */ 
 	}
 	printf("\n\t-------------------------------------------");
-	fclose(PEDIDOS);
+	fclose(PAGAMENTOS);
 
 }
 
@@ -107,9 +108,9 @@ void listacartoes (void)
 		printf("\n\t-------------------------------------------");
 		printf("\n\tcodigo  |   código do cartão ");
 		printf("\n\t-------------------------------------------");
-		while(fread(&card, sizeof(card), 1, CARTOES))
+		while( !feof (CARTOES))
 		{
-			if (card.codigo > 0)
+			fread(&card, sizeof(card), 1, CARTOES);	
 			if ( !feof(CARTOES) )                                                              /*    e aproveita o loop para mostrar   */
 			printf("\n\t%i       |    %-20s", card.codigo, card.numbcartao);     /*    os produtos existentes na tela    */ 
 		}

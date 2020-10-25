@@ -18,7 +18,7 @@ void confirma_pagto_a(void)
 {
 	printf("Pagamento concuído? [s=sim] [n=não]\n");
 	fflush(stdin);
-	op = getch();
+	scanf("%c", &op);
 	switch (op)
 	{
 		case's': case'S':                                                      /*caso o pagamento seja concluído*/
@@ -27,7 +27,10 @@ void confirma_pagto_a(void)
 		PAGAMENTOS = fopen("PAGAMENTOS.DAT", "a");
 		fwrite(&pagto, sizeof(pagto), 1, PAGAMENTOS);      /*só após a confirmmação do pagamento os arquivos são enviados para PAGAMENTOS.DAT*/
 		fclose(PAGAMENTOS);
-		remove("ULTIMOPEDIDO.DAT");
+		pagto.valor = 1;
+		PEDIDOS = fopen("ULTIMOPEDIDO.DAT", "w");
+		fwrite(&pagto, sizeof(pagto), 1, PEDIDOS);
+		fclose(PEDIDOS);
 		system ("LEVE");
 		break;
 
@@ -41,17 +44,21 @@ void confirma_pagto_b(void)
 {
 	printf("Pagamento concuído? [s=sim] [n=não]\n");
 	fflush(stdin);
-	op = getch();
+	scanf("%c", &op);
 	switch (op)
 	{
 		case's': case'S':                                                        /*caso o pagamento seja concluído*/
 		pagto.codigo = conta_quant_pagamento();                             /*chama o programa de contagem autonumérica*/
+		c.codigo = pagto.codigo;
 		strcpy(pagto.forma, "cartao");
 		PAGAMENTOS = fopen("PAGAMENTOS.DAT", "a");
 		fwrite(&pagto, sizeof(pagto), 1, PAGAMENTOS);        /*só após a confirmmação do pagamento os arquivos são enviados para PAGAMENTOS.DAT*/
 		fclose(PAGAMENTOS);
+		pagto.valor = 2;
+		PEDIDOS = fopen("ULTIMOPEDIDO.DAT", "w");
+		fwrite(&pagto, sizeof(pagto), 1, PEDIDOS);
+		fclose(PEDIDOS);
 		cadastracartao(c);
-		remove("ULTIMOPEDIDO.DAT");
 		system ("LEVE");
 		break;
 
@@ -65,7 +72,7 @@ void confirma_pagto_c(void)
 {
 	printf("Pagamento concuído? [s=sim] [n=não]\n");
 	fflush(stdin);
-	op = getch();
+	scanf("%c", &op);
 	switch (op)
 	{
 		case's': case'S':                                                     /*caso o pagamento seja concluído*/
@@ -74,7 +81,10 @@ void confirma_pagto_c(void)
 		PAGAMENTOS = fopen("PAGAMENTOS.DAT", "a");
 		fwrite(&pagto, sizeof(pagto), 1, PAGAMENTOS);      /*só após a confirmmação do pagamento os arquivos são enviados para PAGAMENTOS.DAT*/
 		fclose(PAGAMENTOS);
-		remove("ULTIMOPEDIDO.DAT");
+		pagto.valor = 3;
+		PEDIDOS = fopen("ULTIMOPEDIDO.DAT", "w");
+		fwrite(&pagto, sizeof(pagto), 1, PEDIDOS);
+		fclose(PEDIDOS);
 		system ("LEVE");
 		break;
 
@@ -84,7 +94,7 @@ void confirma_pagto_c(void)
 	}
 }
 
-void confirma_cartao(void)
+void mascara_cartao(void)
 {
 	int i;
 	printf("Digite o número do cartão: ");
@@ -96,7 +106,6 @@ void confirma_cartao(void)
 	{
 		c.numbcartao[i] = '*';
 	}
-	c.codigo = pagto.codigo;
 	printf("\n");
 }
 
@@ -112,8 +121,9 @@ int main()
 	PEDIDOS = fopen ("ULTIMOPEDIDO.DAT", "r");
 	if (PEDIDOS == NULL)
 	{
-		printf("OPA, nenhum pedido registrado, realize um pedido e tente novamente.");
-		printf("\n\n\nPressione qualquer tecla para voltar ao menu\n");
+		system("cls");
+		printf("\n\n\tOPA, nenhum pedido registrado, realize um pedido e tente novamente.");
+		printf("\n\n\tPressione qualquer tecla para voltar ao menu\n");
 		fflush(stdin); getch();
 		system ("VENDAS");
 	}
@@ -134,7 +144,7 @@ int main()
 		break;
 		
 		case 'b': case 'B':
-		confirma_cartao();
+		mascara_cartao();
 		confirma_pagto_b();
 		break;
 		

@@ -3,7 +3,6 @@
 #include <conio.h>
 #include <stdlib.h>
 #include <locale.h>
-#include <time.h>
 /*---------------------------------------*/
 
 /*ESTRUTURA DE PRODUTOS*/
@@ -52,7 +51,6 @@ typedef struct
 	FILE * CARTOES;
 	FILE * PEDIDOS;
 	FILE * TICKET;
-
 /*---------------------------------------*/
 /*FUNÇÃO DE ERRO*/
 void  falha (void)
@@ -150,9 +148,9 @@ void PesquisarPedido (produtos * Ped)
    }
 }
 /*FUNÇÃO PARA REGISTRAR PEDIDOS*/
-void RegistrarPedido (pagamentos criarpedido, char controle)
+void RegistrarPedido (pagamentos criarpedido, int controle)
 {
-	if (controle == '1')
+	if (controle == 1)
 		PEDIDOS = fopen ("ULTIMOPEDIDO.DAT", "w");
 	else
 		falha();
@@ -165,7 +163,7 @@ void RegistrarPedido (pagamentos criarpedido, char controle)
 	fclose (PEDIDOS);
 }
 /*FUNÇÃO PARA CRIAR TICKET DO ULTIMO PEDIDO*/
-void ticket (int numeropedido, int quant, pedidos dadospedido, float total, char controle)
+void ticket (int numeropedido, int quant, pedidos dadospedido, float total, int controle)
 {
 	setlocale(LC_ALL,"");
 	if (quant==1)
@@ -190,7 +188,7 @@ void ticket (int numeropedido, int quant, pedidos dadospedido, float total, char
 	   		fprintf (TICKET, "Cód - Produto   - Unidade - Quant - Valor Total\n");
 	   		fprintf (TICKET, "===============================================\n");
     	}
-		if (controle == '1')
+		if (controle == 1)
         {
 			fprintf (TICKET, "===============================================\n");
 			fprintf (TICKET, "\t\tTOTAL R$ %5.2f\n", total);
