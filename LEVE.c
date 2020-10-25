@@ -21,6 +21,6 @@ int main()
 	if (entrega == 's')
 	{
 	remove ("TICKET.TXT");
-	system ("MENU");
+	system ("VENDAS");
 	}
 }

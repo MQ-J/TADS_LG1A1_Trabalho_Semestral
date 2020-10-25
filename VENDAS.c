@@ -33,6 +33,7 @@ int main()
 	case 'S': case 's': system ("ADMIN"); break;
 	
 	default: printf("\n\t|          Opcão inválida! Digite:          |\n\t|[a = voltar] [qualquer outra tecla = sair] |\n");
+	fflush (stdin);
 	op2 = getche();
 	if (op2 == 'a')                                                                            /*opção inválida*/
 	main();

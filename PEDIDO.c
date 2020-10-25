@@ -19,28 +19,39 @@ int main()
 {
 	setlocale (LC_ALL, "");
 	system("color 0b");
-	system("cls");
 	registropagamentos.codigo = conta_quant_pagamento("PAGAMENTOS.DAT")+1;
 	do
 	{
-		printf("================= PEDIDO ==================\n");
-		printf("           Produtos disponíveis:             ");
-		printf("\n-------------------------------------------");
-		printf("\ncodigo  |    nome do produto       | valor ");                                    /*cabeçalho do menu*/
-		printf("\n-------------------------------------------");
-		PRODUTOS = fopen("PRODUTOS.DAT", "r");
-		while( !feof(PRODUTOS))
+		do
 		{
-			fread(&prod, sizeof(prod), 1, PRODUTOS);                                          /*busca a lista de produtos em PRODUTOS.DAT*/
-			if ( !feof(PRODUTOS) )
-			printf("\n%-2i      |    %-22s| %-5.2f", prod.codigo, prod.nome, prod.custo);
+			system("cls");
+			printf("================= PEDIDO ==================\n");
+			printf("           Produtos disponíveis:             ");
+			printf("\n-------------------------------------------");
+			printf("\ncodigo  |    nome do produto       | valor ");                                    /*cabeçalho do menu*/
+			printf("\n-------------------------------------------");
+			PRODUTOS = fopen("PRODUTOS.DAT", "r");
+			while (!feof(PRODUTOS))
+			{
+				fread(&prod, sizeof(prod), 1, PRODUTOS);                                          /*busca a lista de produtos em PRODUTOS.DAT*/
+				if ( !feof(PRODUTOS) )
+				printf("\n%-2i      |    %-22s| %-5.2f", prod.codigo, prod.nome, prod.custo);
+			}
+			printf("\n-------------------------------------------");
+			fclose(PRODUTOS);
+			
+			printf("\nDigite o código do produto desejado: ");
+			fflush(stdin);
+			scanf("%i", &op.produtopedido.codigo); /* captura a opção escolida*/
+			
+			if (op.produtopedido.codigo < 1 || op.produtopedido.codigo > prod.codigo)
+			{
+				printf("\n\nOPA, não temos nenhum produto com esse código");
+				getch();
+			}
 		}
-		printf("\n-------------------------------------------");
-		fclose(PRODUTOS);
+		while (op.produtopedido.codigo < 1 || op.produtopedido.codigo > prod.codigo);
 		
-		printf("\nDigite o código do produto desejado: ");
-		fflush(stdin);
-		scanf("%i", &op.produtopedido.codigo); /* captura a opção escolida*/
 		quantidadepedidos++;
 		PesquisarPedido (&op.produtopedido);
 		do
@@ -67,9 +78,10 @@ int main()
     while ( sair == 'S' || sair == 's');
     ticket (registropagamentos.codigo, ++quantidadepedidos, op, total, '1');
     system ("cls");
+    fflush (stdin);
 	system ("NOTEPAD TICKET.TXT");
 	registropagamentos.valor = total;
 	RegistrarPedido (registropagamentos, '1');
-	system ("MENU");
+	system ("VENDAS");
 	return 0;
 }
