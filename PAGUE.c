@@ -3,38 +3,148 @@
 #include <conio.h>
 #include <stdlib.h>
 #include <locale.h>
+#include <string.h>
+#include "dados.h"
 
 /*VARIÁVEIS*/
 char lc_all;
-int pagament;
-int tam;
-FILE * arq;
-int preco_total;
+char op_pagament, op;
+int conta_digito;
+int numb;
+
+/*FUNÇÕES*/
+void confirma_pagto_a(void)
+{
+	printf("Pagamento concuído? [s=sim] [n=não]\n");
+	fflush(stdin);
+	op = getch();
+	switch (op)
+	{
+		case's': case'S':                                                      /*caso o pagamento seja concluído*/
+		pagto.codigo = conta_quant_pagamento();                            /*chama o programa de contagem autonumérica*/
+		strcpy(pagto.forma, "dinheiro");
+		PAGAMENTOS = fopen("PAGAMENTOS.DAT", "a");
+		fwrite(&pagto, sizeof(pagto), 1, PAGAMENTOS);      /*só após a confirmmação do pagamento os arquivos são enviados para PAGAMENTOS.DAT*/
+		fclose(PAGAMENTOS);
+		remove("ULTIMOPGTO.DAT");
+		system ("LEVE");
+		break;
+
+		default:                                                         /* pagamento NÃO concluído */
+		system ("MENU");
+		break;
+	}
+}
+
+void confirma_pagto_b(void)
+{
+	printf("Pagamento concuído? [s=sim] [n=não]\n");
+	fflush(stdin);
+	op = getch();
+	switch (op)
+	{
+		case's': case'S':                                                        /*caso o pagamento seja concluído*/
+		pagto.codigo = conta_quant_pagamento();                             /*chama o programa de contagem autonumérica*/
+		strcpy(pagto.forma, "cartao");
+		PAGAMENTOS = fopen("PAGAMENTOS.DAT", "a");
+		fwrite(&pagto, sizeof(pagto), 1, PAGAMENTOS);        /*só após a confirmmação do pagamento os arquivos são enviados para PAGAMENTOS.DAT*/
+		fclose(PAGAMENTOS);
+		
+		CARTOES = fopen("CARTOES.DAT", "a");
+		fwrite(&card, sizeof(card), 1, CARTOES);            /*os arquivos só são enviados para o CARTOES.DAT quando o pagamento é aprovado*/
+		fclose(CARTOES);
+		remove("ULTIMOPGTO.DAT");
+		system ("LEVE");
+		break;
+
+		default:                                                          /* pagamento NÃO concluído */
+		system ("MENU");
+		break;
+	}
+}
+
+void confirma_pagto_c(void)
+{
+	printf("Pagamento concuído? [s=sim] [n=não]\n");
+	fflush(stdin);
+	op = getch();
+	switch (op)
+	{
+		case's': case'S':                                                     /*caso o pagamento seja concluído*/
+		pagto.codigo = conta_quant_pagamento();                            /*chama o programa de contagem autonumérica*/
+		strcpy(pagto.forma, "cheque");
+		PAGAMENTOS = fopen("PAGAMENTOS.DAT", "a");
+		fwrite(&pagto, sizeof(pagto), 1, PAGAMENTOS);      /*só após a confirmmação do pagamento os arquivos são enviados para PAGAMENTOS.DAT*/
+		fclose(PAGAMENTOS);
+		remove("ULTIMOPGTO.DAT");
+		system ("LEVE");
+		break;
+
+		default:                                                        /* pagamento NÃO concluído */
+		system ("MENU");
+		break;
+	}
+}
+
+void confirma_cartao(void)
+{
+	int i;
+	cartoes c;
+	printf("Digite o número do cartão: ");
+	for(i=0; i<16; i++)
+	{
+		fflush(stdin);	c.numbcartao[i] = getche();
+	}
+	for(i=4; i<12; i++)
+	{
+		c.numbcartao[i] = '*';
+	}
+	c.codigo = pagto.codigo;
+	cadastracartao(c);
+	printf("\n");
+}
 
 /*CORPO DO PROGRAMA*/
 int main()
 {
-	system("color b0");
+	system("color 0b");
 	system("cls");
 	setlocale (lc_all, "");
+	float precototal;
 	printf("========= PAGUE ==========\n\n");
 	
-	arq = fopen ("lista_pedido.txt", "r");
-	tam= -2;
-	fseek(arq, tam, SEEK_END);                         /* busca o valor total da compra no recibo */
-	while (!feof(arq))
-	fscanf(arq, "%i", &preco_total);
-	fclose(arq);
-	
-	printf("Preço total: R$ %i", preco_total); 
-	printf("\n\nO Pagamento foi realizado? [s=sim] [n=não]\n");
-	fflush (stdin);
-	scanf ("%c", &pagament);
-	if (pagament =='s')                                         /* pagamento concluído*/
-	system ("LEVE");
-	if (pagament =='n')                                       /* pagamento NÃO concluído */
+	PEDIDOS = fopen ("ULTIMOPGTO.DAT", "r");
+	if (PEDIDOS == NULL)
 	{
-	remove ("lista_pedido.txt");
-	system ("MENU");
+		printf("OPA, nenhum pedido registrado, realize um pedido e tente novamente.");
+		printf("\n\n\nPressione qualquer tecla para voltar ao menu\n");
+		fflush(stdin); getch();
+		system ("MENU");
 	}
+	while (!feof(PEDIDOS))
+	fread(&pagto, sizeof(pagto), 1, PEDIDOS);
+	fclose(PEDIDOS);
+	precototal = pagto.valor;                              /*busca o valor total da compra no arquivo PEDIDOS.DAT para mostrar na tela*/
+	printf("Preço total: R$ %.2f", precototal); 
+	
+	printf("\n\nQual a forma de pagamento?");
+	printf("\n\n a = dinheiro\n b = cartão de débito/crédito\n c = cheque\n\n");
+	fflush(stdin);
+	op_pagament = getch();
+	switch (op_pagament)
+	{
+		case 'a': case 'A':
+		confirma_pagto_a();
+		break;
+		
+		case 'b': case 'B':
+		confirma_cartao();
+		confirma_pagto_b();
+		break;
+		
+		case 'c': case 'C':
+		confirma_pagto_c();
+		break;
+	}
+	return (0);
 }
