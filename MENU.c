@@ -5,35 +5,37 @@
 #include <locale.h>
 
 /*VARIÁVEIS*/
-char lc_all;
-char op;
+char op, op2;
 
 /*CORPO DO PROGRAMA*/
 int main()
 {
 	system("color 0b");
 	system("cls");
-	setlocale (lc_all, "");
-	printf("                      wmwmwmwmwmwmwmw\n");
-	printf("                           MENU\n");
-	printf("                      wmwmwmwmwmwmwmw\n\n");
-	printf("==========\n");
-	printf(" 1.pedido\n");
-	printf(" 2.pague\n");
-	printf(" 3.leve\n");
-	printf(" S.sair\n");
-	printf("==========\n ");
+	setlocale (LC_ALL, "");
+	printf("\t|--------------------|\n");
+	printf("\t|                    |\n");
+	printf("\t|       VENDAS       |\n");
+	printf("\t|                    |\n");                                                     /*cabeçalho do menu*/
+	printf("\t|--------------------|\n\n");
+	printf("\t1 - Pedido\n");
+	printf("\t2 - Pagamento\n");
+	printf("\t3 - Entrega\n");
+	printf("\ts - Sair\n\n\t");
 	
 	fflush (stdin);
-	op = getche ();	/*captura a opção escolhida*/
-	
-	/*chama o respectivo programa filho*/
+	op = getche();
 	switch (op)
-	{
+	{                                                                              	/*chama o respectivo programa filho*/
 	case '1': system ("PEDIDO"); break;
-	case '2': system("PAGUE"); break;
-	case '3': system("LEVE"); break;
-	case 'S': case 's': exit(0); break;
+	case '2': system ("PAGUE"); break;
+	case '3': system ("LEVE"); break;
+	case 'S': case 's': system ("ADMIN"); break;
+	
+	default: printf("\n\t|          Opcão inválida! Digite:          |\n\t|[a = voltar] [qualquer outra tecla = sair] |\n");
+	op2 = getche();
+	if (op2 == 'a')                                                                            /*opção inválida*/
+	main();
 	}
-	return 0;
+	return (0);
 }

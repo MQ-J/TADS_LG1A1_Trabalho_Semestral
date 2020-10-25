@@ -3,115 +3,73 @@
 #include <conio.h>
 #include <stdlib.h>
 #include <locale.h>
+#include "dados.h"
+
 
 /*VARIÁVEIS*/
-char lc_all;
-char op;
-int quant_sandu, valor_sandu;
-int quant_coca, valor_coca;
-int quant_pao, valor_pao;
-int valor_total;
+pedidos op;
 FILE * arq;
-char op2;
-
+int quantidadepedidos = 0;
+float total = 0;
+char sair;
+pagamentos registropagamentos;
 
 /*MENU DE OPÇÕES*/
 int main()
 {
-	inicio:
-	system("color b0");
+	setlocale (LC_ALL, "");
+	system("color 0b");
 	system("cls");
-	setlocale (lc_all, "");
-	printf("========= PEDIDO ==========\n\n");
-	printf("         opções:         \n");
-	printf(" a. Sanduíche de presunto...R$ 8,00 \n");
-	printf(" s. Coca-cola de café.......R$ 5,00\n");       /* Produtos a venda */
-	printf(" d. Pão de queijo...........R$ 3,00\n\n");
-	printf(" f. Cancelar compra       \n");
-	printf(" j. Voltar ao menu        \n\n");
-	
-	fflush (stdin);
-	op = getche();/* captura a opção escolida*/
-	
-	if (op == 'a')                                                                            /* SANDUÍCHE */
+	registropagamentos.codigo = conta_quant_pagamento("PAGAMENTOS.DAT")+1;
+	do
 	{
-	printf ("\n\nQuantos?\n");
-	scanf ("%i", &quant_sandu);
-	valor_sandu = quant_sandu * 8;
-	arq = fopen ("lista_pedido.txt", "a"); /* criando arquivo com lista de pedido */
-	fprintf(arq,"\nSanduíches de presunto (%i)...R$ %i,00", quant_sandu, valor_sandu);
-	fclose(arq);
-	printf ("\n\nMais alguma coisa? [s=sim] [n=não]\n");
-	fflush (stdin);
-	op2 = getche ();
-		if (op2 == 's') /* Volta ao menu de opções */
-		goto inicio;
-		if (op2 =='n') /* Volta ao programa MENU_MQ */
+		printf("================= PEDIDO ==================\n");
+		printf("           Produtos disponíveis:             ");
+		printf("\n-------------------------------------------");
+		printf("\ncodigo  |    nome do produto       | valor ");                                    /*cabeçalho do menu*/
+		printf("\n-------------------------------------------");
+		PRODUTOS = fopen("PRODUTOS.DAT", "r");
+		while( !feof(PRODUTOS))
 		{
-			arq = fopen ("lista_pedido.txt", "a");
-			valor_total = valor_sandu + valor_coca + valor_pao;  /* calcula preço total*/
-			fprintf(arq, "\n\nR$ %i", valor_total);
-			fclose(arq);
-			goto retorno_menu;
-		} 
-	}
-	if (op == 's')                                                                               /* COCA */
-	{
-	printf ("\n\nQuantos?\n");
-	scanf ("%i", &quant_coca);
-	valor_coca = quant_coca * 5;
-	arq = fopen ("lista_pedido.txt", "a"); /* criando arquivo com lista de pedidos */
-	fprintf(arq,"\nCocas (%i)....................R$ %i,00", quant_coca, valor_coca);
-	fclose(arq);
-	printf ("\n\nMais alguma coisa? [s=sim] [n=não]\n");
-	fflush (stdin);
-	op2 = getche ();
-		if (op2 == 's') /* Volta ao menu de opções */
-		goto inicio;
-		if (op2 =='n') /* Volta ao programa MENU_MQ */
-		{
-			arq = fopen ("lista_pedido.txt", "a");
-			valor_total = valor_sandu + valor_coca + valor_pao;  /* calcula preço total*/
-			fprintf(arq, "\n\nR$ %i", valor_total);
-			fclose(arq);
-			goto retorno_menu;
+			fread(&prod, sizeof(prod), 1, PRODUTOS);                                          /*busca a lista de produtos em PRODUTOS.DAT*/
+			if ( !feof(PRODUTOS) )
+			printf("\n%-2i      |    %-22s| %-5.2f", prod.codigo, prod.nome, prod.custo);
 		}
-	}
-	if (op == 'd')                                                                          /* PÃO DE QUEIJO */
-	{
-	printf ("\n\nQuantos?\n");
-	scanf ("%i", &quant_pao);
-	valor_pao = quant_pao * 3;
-	arq = fopen ("lista_pedido.txt", "a"); /* criando arquivo com lista de pedidos */
-	fprintf(arq,"\nPães de queijo (%i)...........R$ %i,00", quant_pao, valor_pao);
-	fclose(arq);
-	printf ("\n\nMais alguma coisa? [s=sim] [n=não]\n");
-	fflush (stdin);
-	op2 = getche ();
-		if (op2 == 's') /* Volta ao menu de opções */
-		goto inicio;
-		if (op2 =='n') /* Volta ao programa MENU_MQ */
+		printf("\n-------------------------------------------");
+		fclose(PRODUTOS);
+		
+		printf("\nDigite o código do produto desejado: ");
+		fflush(stdin);
+		scanf("%i", &op.produtopedido.codigo); /* captura a opção escolida*/
+		quantidadepedidos++;
+		PesquisarPedido (&op.produtopedido);
+		do
 		{
-			arq = fopen ("lista_pedido.txt", "a");
-			valor_total = valor_sandu + valor_coca + valor_pao;  /* calcula preço total*/
-			fprintf(arq, "\n\nR$ %i", valor_total);
-			fclose(arq);
-			goto retorno_menu;
-		} 
-	}
-	if (op == 'f')                                                                          /* CANCELA PEDIDO */
-	{
-	remove ("lista_pedido.txt");
-	printf ("\n\nMais alguma coisa? [s=sim] [n=não]\n");
-	fflush (stdin);
-	op2 = getche ();
-		if (op2 == 's') /* Volta ao menu de opções */
-		goto inicio;
-		if (op2 =='n') /* Volta ao programa MENU_MQ */
-		goto retorno_menu;
-	}
-	if (op == 'j')                                                                       /* VOLTA AO PROGRAMA MENU */
-	retorno_menu:
+			printf ("\nQuantos %s você deseja? ", op.produtopedido.nome);
+				fflush(stdin);
+				scanf("%i", &op.quant);
+				if (op.quant < 1)    
+		    	{
+					printf ("\nQuantidade inválida!");
+		        	getch();
+		    	}
+		}
+		while (op.quant < 1);
+		
+		op.custo = op.quant * op.produtopedido.custo;
+		total = total + op.custo;
+		ticket (registropagamentos.codigo, quantidadepedidos, op, total, '0');
+		printf ("\nO total do pedido até o momento é de: R$ %6.2f", total);
+		printf ("\n\nDeseja pedir mais alguma coisa? [S = sim] ou [N = não]");
+		fflush (stdin);
+		sair = getch();
+    }
+    while ( sair == 'S' || sair == 's');
+    ticket (registropagamentos.codigo, ++quantidadepedidos, op, total, '1');
+    system ("cls");
+	system ("NOTEPAD TICKET.TXT");
+	registropagamentos.valor = total;
+	RegistrarPedido (registropagamentos, '1');
 	system ("MENU");
 	return 0;
 }
